@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wordle App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+      text-align: center;
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .game {
+      max-width: 320px;
+      margin: 30px auto;
+    }
+
+    .row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .cell {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      background-color: white;
+      text-transform: uppercase;
+    }
+
+    .correct {
+      background-color: #22c55e;
+      color: white;
+    }
+
+    .present {
+      background-color: #eab308;
+      color: white;
+    }
+
+    .absent {
+      background-color: #9ca3af;
+      color: white;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 180px;
+      text-transform: uppercase;
+    }
+
+    button {
+      padding: 10px 14px;
+      font-size: 16px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<a href="index.html">← Back to Career Page</a>
+
+<h1>Wordle Game</h1>
+<p>Guess the 5-letter word. You have 6 attempts.</p>
+
+<div class="game" id="gameBoard"></div>
+
+<input type="text" id="guessInput" maxlength="5" placeholder="Enter guess">
+<button onclick="submitGuess()">Guess</button>
+
+<div class="message" id="message"></div>
+
+<script>
+  const secretWord = "SMART";
+  let currentRow = 0;
+  const maxRows = 6;
+
+  const board = document.getElementById("gameBoard");
+  const message = document.getElementById("message");
+
+  for (let i = 0; i < maxRows; i++) {
+    const row = document.createElement("div");
+    row.className = "row";
+
+    for (let j = 0; j < 5; j++) {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      row.appendChild(cell);
+    }
+
+    board.appendChild(row);
+  }
+
+  function submitGuess() {
+    const input = document.getElementById("guessInput");
+    const guess = input.value.toUpperCase();
+
+    if (guess.length !== 5) {
+      message.textContent = "Enter a 5-letter word.";
+      return;
+    }
+
+    if (currentRow >= maxRows) return;
+
+    const row = board.children[currentRow].children;
+
+    for (let i = 0; i < 5; i++) {
+      row[i].textContent = guess[i];
+
+      if (guess[i] === secretWord[i]) {
+        row[i].className = "cell correct";
+      } else if (secretWord.includes(guess[i])) {
+        row[i].className = "cell present";
+      } else {
+        row[i].className = "cell absent";
+      }
+    }
+
+    if (guess === secretWord) {
+      message.textContent = "You won!";
+      input.disabled = true;
+    } else if (currentRow === maxRows - 1) {
+      message.textContent = "Game over. Word was SMART.";
+    }
+
+    currentRow++;
+    input.value = "";
+  }
+</script>
+
+</body>
+</html>
